@@ -82,7 +82,9 @@ describe('pathCompleteExtname', function () {
   // ---
 
 
-  it('should retrieve simple file extensions', function () {
+  it('should retrieve file extensions with two dots', function () {
+    assert.equal(pathCompleteExtname('jquery.min.js'), '.min.js');
+    assert.equal(pathCompleteExtname('package.tar.gz'), '.tar.gz');
   });
 
 });
