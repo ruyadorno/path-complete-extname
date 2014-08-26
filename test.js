@@ -87,5 +87,13 @@ describe('pathCompleteExtname', function () {
     assert.equal(pathCompleteExtname('package.tar.gz'), '.tar.gz');
   });
 
+
+  // ---
+
+
+  it('should ignore dots on path', function () {
+    assert.equal(pathCompleteExtname('/path.to/jquery.min.js'), '.min.js');
+  });
+
 });
 
