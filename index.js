@@ -8,7 +8,7 @@ if (isWindows) {
 
   // Regex to split the tail part of the above into [*, dir, basename, ext]
   var splitTailRe =
-      /^([\s\S]*?)((?:\.{1,2}|[^\\\/]+?|)(\.[^.\/\\]*|))(?:[\\\/]*)$/;
+      /^([\s\S]*?)((?:\.{1,2}|[^\\\/]+?|)(\.[^\/\\]*|))(?:[\\\/]*)$/;
 
   // Function to split a filename into [root, dir, basename, ext]
   // windows version
