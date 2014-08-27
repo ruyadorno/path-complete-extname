@@ -95,5 +95,15 @@ describe('pathCompleteExtname', function () {
     assert.equal(pathCompleteExtname('/path.to/jquery.min.js'), '.min.js');
   });
 
+
+  // ---
+
+
+  it('should not consider initial dot as part of extension', function () {
+    assert.equal(pathCompleteExtname('some.path/.yo-rc.json'), '.json');
+    assert.equal(pathCompleteExtname('/.yo-rc.json'), '.json');
+    assert.equal(pathCompleteExtname('.yo-rc.json'), '.json');
+  });
+
 });
 
