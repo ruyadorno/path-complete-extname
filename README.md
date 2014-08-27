@@ -2,7 +2,28 @@
 
 version: 0.0.0
 
-Almost the same `path.extname` implementation, this time including multiple dots extensions.
+[![Build Status](https://travis-ci.org/ruyadorno/path-complete-extname.svg?branch=master)](https://travis-ci.org/ruyadorno/path-complete-extname)
+
+[path.extname](http://nodejs.org/api/path.html#path_path_extname_p) implementation adapted to also include multiple dots extensions.
+
+
+## About
+
+This module contains only the necessary logic for the [Node.js](http://nodejs.org/) native method `path.extname` adapted to get complete extension names.
+
+### Example
+
+```js
+  var path = require('path');
+  var pathCompleteExtname = require('path-complete-extname');
+
+  var filename = 'myfile.tar.gz';
+
+  path.extname(filename); // .gz
+  pathCompleteExtname(filename); // .tar.gz
+```
+
+For more information about what filenames are valid and what will be returned in each case, see the **test.js** file.
 
 
 ## License
