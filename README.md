@@ -1,4 +1,4 @@
-# pathCompleteExtname
+# path-complete-extname
 
 version: 0.0.0
 
@@ -9,7 +9,7 @@ version: 0.0.0
 
 ## About
 
-This module contains only the necessary logic for the [Node.js](http://nodejs.org/) native method `path.extname` adapted to get complete extension names.
+This module contains the native implementation of [Node.js](http://nodejs.org/) `path.extname` method adapted to get complete extension names.
 
 ### Example
 
