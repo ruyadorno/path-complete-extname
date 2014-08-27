@@ -12,6 +12,8 @@ describe('pathCompleteExtname', function () {
 
   it('should pass all existing nodejs unit tests', function () {
 
+    // Original tests that would not pass in this new implementation
+    // are left commented out here for reference
     assert.equal(pathCompleteExtname(''), '');
     assert.equal(pathCompleteExtname('/path/to/file'), '');
     assert.equal(pathCompleteExtname('/path/to/file.ext'), '.ext');
