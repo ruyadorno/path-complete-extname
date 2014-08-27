@@ -114,12 +114,20 @@ describe('pathCompleteExtname', function () {
   });
 
 
-
   // ---
 
 
   it('should also ignore initial dot if three-dots are present', function () {
     assert.equal(pathCompleteExtname('some.path/.some.thing.zip'), '.thing.zip');
+  });
+
+
+  // ---
+
+
+  it('should also get version numbers as extensions', function () {
+    assert.equal(pathCompleteExtname('some.path/something.0.6.7.js'), '.0.6.7.js');
+    assert.equal(pathCompleteExtname('some.path/something.1.2.3.min.js'), '.1.2.3.min.js');
   });
 
 });
