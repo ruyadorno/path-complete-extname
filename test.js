@@ -105,5 +105,22 @@ describe('pathCompleteExtname', function () {
     assert.equal(pathCompleteExtname('.yo-rc.json'), '.json');
   });
 
+
+  // ---
+
+
+  it('should accept a three-dots file extension', function () {
+    assert.equal(pathCompleteExtname('some.path/myamazingfile.some.thing.zip'), '.some.thing.zip');
+  });
+
+
+
+  // ---
+
+
+  it('should also ignore initial dot if three-dots are present', function () {
+    assert.equal(pathCompleteExtname('some.path/.some.thing.zip'), '.thing.zip');
+  });
+
 });
 
