@@ -2,7 +2,7 @@
   "name": "path-complete-extname",
   "version": "0.0.0",
   "main": "index.js",
-  "description": "Same implementation of path.extname but including multiple dots extensions.",
+  "description": "path.extname implementation adapted to also include multiple dots extensions.",
   "homepage": "https://github.com/ruyadorno/path-complete-extname",
   "bugs": "https://github.com/ruyadorno/path-complete-extname/issues",
   "author": {
