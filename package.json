@@ -1,6 +1,6 @@
 {
   "name": "path-complete-extname",
-  "version": "0.1.0",
+  "version": "0.1.1-rc",
   "main": "index.js",
   "description": "path.extname implementation adapted to also include multiple dots extensions.",
   "homepage": "https://github.com/ruyadorno/path-complete-extname",
