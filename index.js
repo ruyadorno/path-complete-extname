@@ -98,9 +98,9 @@ function posix(path) {
   var matchedSlash = true;
   // Track the state of characters (if any) we see before our first dot and
   // after any path separator we find
-  var preDotState = 0;
   for (var i = path.length - 1; i >= 0; --i) {
     const code = path.charCodeAt(i);
+    const nextCode = path.charCodeAt(i - 1);
     if (code === CHAR_FORWARD_SLASH) {
       // If we reached a path separator that was not part of a set of path
       // separators at the end of the string, stop now
@@ -116,35 +116,28 @@ function posix(path) {
       matchedSlash = false;
       end = i + 1;
     }
-    if (code === CHAR_DOT) {
-      // If this is our first dot, mark it as the start of our extension
-      if (startDot === -1)
-        startDot = i;
-      else if (preDotState !== 1)
-        preDotState = 1;
-    } else if (startDot !== -1) {
-      // We saw a non-dot and non-path separator before our dot, so we should
-      // have a good chance at having a non-empty extension
-      preDotState = -1;
+    if (code === CHAR_DOT &&
+      // dot must not be first char of the filename
+      i !== 0 &&
+      // next char must not be a slash
+      nextCode !== CHAR_FORWARD_SLASH &&
+      // previous char must not be a start dot
+      i + 1 !== startDot
+    ) {
+      startDot = i;
     }
   }
 
   if (startDot === -1 ||
       end === -1 ||
-      // We saw a non-dot character immediately before the dot
-      preDotState === 0 ||
       // The (right-most) trimmed path component is exactly '..'
-      (preDotState === 1 &&
-       startDot === end - 1 &&
+      (startDot === end - 1 &&
        startDot === startPart + 1)) {
     return '';
   }
   return path.slice(startDot, end);
 }
 
-module.exports = function() {
-  (process.platform === 'win32' ? win32 : posix)();
-};
-
+module.exports = process.platform === 'win32' ? win32 : posix;
 module.exports.win32 = win32;
 module.exports.posix = posix;
