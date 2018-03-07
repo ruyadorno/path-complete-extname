@@ -18,7 +18,7 @@
       "type": "MIT"
     }
   ],
-  "keywords":[
+  "keywords": [
     "path",
     "extname",
     "extension",
@@ -26,18 +26,9 @@
     "fs"
   ],
   "devDependencies": {
-    "grunt": "~0.4.x",
-    "grunt-contrib-jshint": "~0.7.x",
-    "grunt-sg-release": "~0.2.x",
-    "grunt-mocha-test": "~0.11.x",
-    "load-grunt-tasks": "~0.2.x",
-    "time-grunt": "~0.2.x",
-    "jshint-stylish": "~0.1.x",
-    "mocha": "~1.21.x"
+    "mocha": "^5.0.2"
   },
-  "dependencies": {},
   "scripts": {
-    "test": "grunt test"
+    "test": "mocha test.js"
   }
 }
-
