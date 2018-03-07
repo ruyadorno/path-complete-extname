@@ -1,7 +1,5 @@
 # path-complete-extname
 
-version: 0.1.0
-
 [![Build Status](https://travis-ci.org/ruyadorno/path-complete-extname.svg?branch=master)](https://travis-ci.org/ruyadorno/path-complete-extname)
 
 [path.extname](http://nodejs.org/api/path.html#path_path_extname_p) implementation adapted to also include multiple dots extensions.
