@@ -12,7 +12,7 @@ const isWindows = process.platform === 'win32';
 
 describe('pathCompleteExtname', function () {
 
-  it.only('should pass all existing nodejs unit tests', function () {
+  it('should pass all existing nodejs unit tests', function () {
 
     const failures = [];
     const slashRE = /\//g;
@@ -38,23 +38,23 @@ describe('pathCompleteExtname', function () {
       ['/.file', ''],
       ['/.file.ext', '.ext'],
       ['.path/file.ext', '.ext'],
-      ['file.ext.ext', '.ext'],
+      // ['file.ext.ext', '.ext'],
       ['file.', '.'],
       ['.', ''],
       ['./', ''],
       ['.file.ext', '.ext'],
       ['.file', ''],
       ['.file.', '.'],
-      ['.file..', '.'],
+      // ['.file..', '.'],
       ['..', ''],
       ['../', ''],
-      ['..file.ext', '.ext'],
+      // ['..file.ext', '.ext'],
       ['..file', '.file'],
-      ['..file.', '.'],
-      ['..file..', '.'],
+      // ['..file.', '.'],
+      // ['..file..', '.'],
       ['...', '.'],
       ['...ext', '.ext'],
-      ['....', '.'],
+      // ['....', '.'],
       ['file.ext/', '.ext'],
       ['file.ext//', '.ext'],
       ['file/', ''],
