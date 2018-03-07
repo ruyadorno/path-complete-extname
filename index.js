@@ -33,9 +33,6 @@ function win32(path) {
   var startPart = 0;
   var end = -1;
   var matchedSlash = true;
-  // Track the state of characters (if any) we see before our first dot and
-  // after any path separator we find
-  var preDotState = 0;
 
   // Check for a drive letter prefix so as not to mistake the following
   // path separator as an extra separator at the end of the path that can be
@@ -49,6 +46,7 @@ function win32(path) {
 
   for (var i = path.length - 1; i >= start; --i) {
     const code = path.charCodeAt(i);
+    const nextCode = path.charCodeAt(i - 1);
     if (isPathSeparator(code)) {
       // If we reached a path separator that was not part of a set of path
       // separators at the end of the string, stop now
@@ -64,26 +62,24 @@ function win32(path) {
       matchedSlash = false;
       end = i + 1;
     }
-    if (code === CHAR_DOT) {
-      // If this is our first dot, mark it as the start of our extension
-      if (startDot === -1)
-        startDot = i;
-      else if (preDotState !== 1)
-        preDotState = 1;
-    } else if (startDot !== -1) {
-      // We saw a non-dot and non-path separator before our dot, so we should
-      // have a good chance at having a non-empty extension
-      preDotState = -1;
+    if (code === CHAR_DOT &&
+      // dot must not be first char of the filename
+      i !== 0 &&
+      // next char must not be a slash
+      !isPathSeparator(nextCode) &&
+      // previous char must not be a start dot
+      i + 1 !== startDot &&
+      // do not pick dot if next to drive letter chars
+      (i !== 2 || start !== 2)
+    ) {
+      startDot = i;
     }
   }
 
   if (startDot === -1 ||
       end === -1 ||
-      // We saw a non-dot character immediately before the dot
-      preDotState === 0 ||
       // The (right-most) trimmed path component is exactly '..'
-      (preDotState === 1 &&
-       startDot === end - 1 &&
+      (startDot === end - 1 &&
        startDot === startPart + 1)) {
     return '';
   }
