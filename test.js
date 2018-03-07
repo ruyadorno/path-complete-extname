@@ -1,8 +1,10 @@
-var assert = require('assert');
+const assert = require('assert');
+const path = require('path');
 
-var pathCompleteExtname = require('./index.js');
+const pathCompleteExtname = require('.');
+const { win32, posix } = pathCompleteExtname;
 
-var isWindows = process.platform === 'win32';
+const isWindows = process.platform === 'win32';
 
 
 // ---
@@ -12,72 +14,100 @@ describe('pathCompleteExtname', function () {
 
   it('should pass all existing nodejs unit tests', function () {
 
-    // Original tests that would not pass in this new implementation
-    // are left commented out here for reference
-    assert.equal(pathCompleteExtname(''), '');
-    assert.equal(pathCompleteExtname('/path/to/file'), '');
-    assert.equal(pathCompleteExtname('/path/to/file.ext'), '.ext');
-    assert.equal(pathCompleteExtname('/path.to/file.ext'), '.ext');
-    assert.equal(pathCompleteExtname('/path.to/file'), '');
-    assert.equal(pathCompleteExtname('/path.to/.file'), '');
-    assert.equal(pathCompleteExtname('/path.to/.file.ext'), '.ext');
-    assert.equal(pathCompleteExtname('/path/to/f.ext'), '.ext');
-    assert.equal(pathCompleteExtname('/path/to/..ext'), '.ext');
-    assert.equal(pathCompleteExtname('file'), '');
-    assert.equal(pathCompleteExtname('file.ext'), '.ext');
-    assert.equal(pathCompleteExtname('.file'), '');
-    assert.equal(pathCompleteExtname('.file.ext'), '.ext');
-    assert.equal(pathCompleteExtname('/file'), '');
-    assert.equal(pathCompleteExtname('/file.ext'), '.ext');
-    assert.equal(pathCompleteExtname('/.file'), '');
-    assert.equal(pathCompleteExtname('/.file.ext'), '.ext');
-    assert.equal(pathCompleteExtname('.path/file.ext'), '.ext');
-    //assert.equal(pathCompleteExtname('file.ext.ext'), '.ext');
-    assert.equal(pathCompleteExtname('file.'), '.');
-    assert.equal(pathCompleteExtname('.'), '');
-    assert.equal(pathCompleteExtname('./'), '');
-    assert.equal(pathCompleteExtname('.file.ext'), '.ext');
-    assert.equal(pathCompleteExtname('.file'), '');
-    assert.equal(pathCompleteExtname('.file.'), '.');
-    //assert.equal(pathCompleteExtname('.file..'), '.');
-    assert.equal(pathCompleteExtname('..'), '');
-    assert.equal(pathCompleteExtname('../'), '');
-    //assert.equal(pathCompleteExtname('..file.ext'), '.ext');
-    assert.equal(pathCompleteExtname('..file'), '.file');
-    //assert.equal(pathCompleteExtname('..file.'), '.');
-    //assert.equal(pathCompleteExtname('..file..'), '.');
-    assert.equal(pathCompleteExtname('...'), '.');
-    assert.equal(pathCompleteExtname('...ext'), '.ext');
-    //assert.equal(pathCompleteExtname('....'), '.');
-    assert.equal(pathCompleteExtname('file.ext/'), '.ext');
-    assert.equal(pathCompleteExtname('file.ext//'), '.ext');
-    assert.equal(pathCompleteExtname('file/'), '');
-    assert.equal(pathCompleteExtname('file//'), '');
-    assert.equal(pathCompleteExtname('file./'), '.');
-    assert.equal(pathCompleteExtname('file.//'), '.');
+    const failures = [];
+    const slashRE = /\//g;
 
-    if (isWindows) {
-      // On windows, backspace is a path separator.
-      assert.equal(pathCompleteExtname('.\\'), '');
-      assert.equal(pathCompleteExtname('..\\'), '');
-      assert.equal(pathCompleteExtname('file.ext\\'), '.ext');
-      assert.equal(pathCompleteExtname('file.ext\\\\'), '.ext');
-      assert.equal(pathCompleteExtname('file\\'), '');
-      assert.equal(pathCompleteExtname('file\\\\'), '');
-      assert.equal(pathCompleteExtname('file.\\'), '.');
-      assert.equal(pathCompleteExtname('file.\\\\'), '.');
+    [
+      [__filename, '.js'],
+      ['', ''],
+      ['/path/to/file', ''],
+      ['/path/to/file.ext', '.ext'],
+      ['/path.to/file.ext', '.ext'],
+      ['/path.to/file', ''],
+      ['/path.to/.file', ''],
+      ['/path.to/.file.ext', '.ext'],
+      ['/path/to/f.ext', '.ext'],
+      ['/path/to/..ext', '.ext'],
+      ['/path/to/..', ''],
+      ['file', ''],
+      ['file.ext', '.ext'],
+      ['.file', ''],
+      ['.file.ext', '.ext'],
+      ['/file', ''],
+      ['/file.ext', '.ext'],
+      ['/.file', ''],
+      ['/.file.ext', '.ext'],
+      ['.path/file.ext', '.ext'],
+      // ['file.ext.ext', '.ext'],
+      ['file.', '.'],
+      ['.', ''],
+      ['./', ''],
+      ['.file.ext', '.ext'],
+      ['.file', ''],
+      ['.file.', '.'],
+      // ['.file..', '.'],
+      ['..', ''],
+      ['../', ''],
+      // ['..file.ext', '.ext'],
+      ['..file', '.file'],
+      // ['..file.', '.'],
+      // ['..file..', '.'],
+      ['...', '.'],
+      ['...ext', '.ext'],
+      // ['....', '.'],
+      ['file.ext/', '.ext'],
+      ['file.ext//', '.ext'],
+      ['file/', ''],
+      ['file//', ''],
+      ['file./', '.'],
+      ['file.//', '.'],
+    ].forEach((test) => {
+      const expected = test[1];
+      [posix, win32].forEach((extname) => {
+        let input = test[0];
+        let os;
+        if (extname === win32) {
+          input = input.replace(slashRE, '\\');
+          os = 'win32';
+        } else {
+          os = 'posix';
+        }
+        const actual = extname(input);
+        const message = `path.${os}.extname(${JSON.stringify(input)})\n  expect=${
+          JSON.stringify(expected)}\n  actual=${JSON.stringify(actual)}`;
+        if (actual !== expected)
+          failures.push(`\n${message}`);
+      });
+      {
+        const input = `C:${test[0].replace(slashRE, '\\')}`;
+        const actual = win32(input);
+        const message = `win32(${JSON.stringify(input)})\n  expect=${
+          JSON.stringify(expected)}\n  actual=${JSON.stringify(actual)}`;
+        if (actual !== expected)
+          failures.push(`\n${message}`);
+      }
+    });
+    assert.strictEqual(failures.length, 0, failures.join(''));
 
-    } else {
-      // On unix, backspace is a valid name component like any other character.
-      assert.equal(pathCompleteExtname('.\\'), '');
-      assert.equal(pathCompleteExtname('..\\'), '.\\');
-      assert.equal(pathCompleteExtname('file.ext\\'), '.ext\\');
-      assert.equal(pathCompleteExtname('file.ext\\\\'), '.ext\\\\');
-      assert.equal(pathCompleteExtname('file\\'), '');
-      assert.equal(pathCompleteExtname('file\\\\'), '');
-      assert.equal(pathCompleteExtname('file.\\'), '.\\');
-      assert.equal(pathCompleteExtname('file.\\\\'), '.\\\\');
-    }
+    // On Windows, backslash is a path separator.
+    assert.strictEqual(win32('.\\'), '');
+    assert.strictEqual(win32('..\\'), '');
+    assert.strictEqual(win32('file.ext\\'), '.ext');
+    assert.strictEqual(win32('file.ext\\\\'), '.ext');
+    assert.strictEqual(win32('file\\'), '');
+    assert.strictEqual(win32('file\\\\'), '');
+    assert.strictEqual(win32('file.\\'), '.');
+    assert.strictEqual(win32('file.\\\\'), '.');
+
+    // On *nix, backslash is a valid name component like any other character.
+    assert.strictEqual(posix('.\\'), '');
+    assert.strictEqual(posix('..\\'), '.\\');
+    assert.strictEqual(posix('file.ext\\'), '.ext\\');
+    assert.strictEqual(posix('file.ext\\\\'), '.ext\\\\');
+    assert.strictEqual(posix('file\\'), '');
+    assert.strictEqual(posix('file\\\\'), '');
+    assert.strictEqual(posix('file.\\'), '.\\');
+    assert.strictEqual(posix('file.\\\\'), '.\\\\');
   });
 
 
